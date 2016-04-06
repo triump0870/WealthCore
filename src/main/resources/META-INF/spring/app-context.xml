@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:encryption="http://www.jasypt.org/schema/encryption"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+    <!--<import resource="tiles-context.xml" />-->  
+	<context:component-scan base-package="com.fn.pfolio" />
+	
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl}</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<!--<prop key="hibernate.jdbc.use_streams_for_binary">true</prop>-->
+				<prop key="org.hibernate.envers.audit_table_suffix">_aud</prop>
+			</props>
+		</property>
+		<property name="namingStrategy">
+			<bean class="org.hibernate.cfg.DefaultNamingStrategy"/>
+		</property>
+		 <!-- <property name="eventListeners">
+                <map>
+                    <entry key="post-insert" value-ref="envers"/>
+                    <entry key="post-update" value-ref="envers"/>
+                    <entry key="post-delete" value-ref="envers"/>
+                    <entry key="post-collection-recreate" value-ref="envers"/>
+                    <entry key="pre-collection-remove" value-ref="envers"/>
+                    <entry key="pre-collection-update" value-ref="envers"/>
+                </map>
+         </property> -->
+		
+		<property name="annotatedClasses">
+			<list>
+				<value>com.fn.pfolio.entity.IssuerEntity</value>
+				<value>com.fn.pfolio.entity.SectorEntity</value>
+				<value>com.fn.pfolio.entity.BenchmarkEntity</value>
+				<value>com.fn.pfolio.entity.PayingAgentEntity</value>
+				<value>com.fn.pfolio.entity.RegistrarEntity</value>
+				<value>com.fn.pfolio.entity.ReportingCategoryEntity</value>
+				<value>com.fn.pfolio.entity.CreditRatingEntity</value>
+				<value>com.fn.pfolio.entity.CreditRatingAgencyEntity</value>
+				<value>com.fn.pfolio.entity.CounterPartyEntity</value>
+				<value>com.fn.pfolio.entity.CounterPartyBankEntity</value>
+				<value>com.fn.pfolio.entity.CounterPartyDematEntity</value>
+				<value>com.fn.pfolio.entity.InstrumentEntity</value>
+				<value>com.fn.pfolio.entity.Ins_CallputScheduleEntity</value>
+				<value>com.fn.pfolio.entity.Ins_CreditRatingEntity</value>
+				<value>com.fn.pfolio.entity.Ins_IpoEntity</value>
+				<value>com.fn.pfolio.entity.Ins_HouseRecoEntity</value>
+				<value>com.fn.pfolio.entity.Ins_InterestEntity</value>
+				<value>com.fn.pfolio.entity.Ins_RepaymentSchEntity</value>
+				<value>com.fn.pfolio.entity.Ins_RestrictionMatrixEntity</value>
+				<value>com.fn.pfolio.entity.Ins_SpParametersEntity</value>
+				<value>com.fn.pfolio.entity.Ins_TermsheetMatrixEntity</value>
+				<value>com.fn.pfolio.entity.ClientLegalStatusEntity</value>		
+				<value>com.fn.pfolio.entity.ClientAccountTypeEntity</value>
+				<value>com.fn.pfolio.entity.ClientOrderEntity</value>
+				<value>com.fn.pfolio.entity.ClientOrderPeerEntity</value>
+				<value>com.fn.pfolio.entity.OrderProcessEntity</value>
+				<value>com.fn.pfolio.entity.OrderDebtRiskMgmtEntity</value>
+				<value>com.fn.pfolio.entity.OrderStatusEntity</value>
+				<value>com.fn.pfolio.entity.EmployeeListEntity</value>
+				<value>com.fn.pfolio.entity.ClientEntity</value>
+				<value>com.fn.pfolio.entity.ClientOtherDetailsEntity</value>
+				<value>com.fn.pfolio.entity.ClientFamilyEntity</value>
+				<value>com.fn.pfolio.entity.ClientBankEntity</value>
+				<value>com.fn.pfolio.entity.ClientDematEntity</value>
+				<value>com.fn.pfolio.entity.LedgerEntity</value>
+				<value>com.fn.pfolio.entity.VoucherEntity</value>
+				<value>com.fn.pfolio.entity.TxnEntity</value>
+				<value>com.fn.pfolio.entity.TxnDetailsEntity</value>
+				<value>com.fn.pfolio.entity.TxnTypeEntity</value>
+				<value>com.fn.pfolio.entity.RoleMatrixEntity</value>
+				<value>com.fn.pfolio.entity.RolesEntity</value>
+				<value>com.fn.pfolio.entity.Ins_InterestScheduleEntity</value>
+				<value>com.fn.pfolio.entity.Ins_InterestFloatingEntity</value>
+				<value>com.fn.pfolio.entity.RmPipelineEntity</value>
+				<value>com.fn.pfolio.entity.DebtMarketPriceEntity</value>
+				<value>com.fn.pfolio.entity.IndicesPriceEntity</value>
+				<value>com.fn.pfolio.entity.LedgerGroupEntity</value>
+				<value>com.fn.pfolio.entity.LedgerSubgroupsEntity</value>
+				<value>com.fn.pfolio.entity.UploadEntity</value>
+				<value>com.fn.pfolio.entity.JobLogEntity</value>
+				<value>com.fn.pfolio.entity.JobScheduleEntity</value>
+				<value>com.fn.pfolio.entity.OrderSupportDocumentEntity</value>
+				<value>com.fn.pfolio.entity.PmsPdfEntity</value>
+				<value>com.fn.pfolio.entity.MfAmcEntity</value>
+				<value>com.fn.pfolio.entity.AssetMfEntity</value>
+				<value>com.fn.pfolio.entity.MfRtaEntity</value>
+				<value>com.fn.pfolio.entity.MfAddressEntity</value>
+				<value>com.fn.pfolio.entity.AssetMfIpoEntity</value>
+				<value>com.fn.pfolio.entity.AssetMfPeerEntity</value>
+				<value>com.fn.pfolio.entity.AssetMfMappingEntity</value>
+				<value>com.fn.pfolio.entity.MfAltNameEntity</value>
+				<value>com.fn.pfolio.entity.MfClassificationEntity</value>
+				<value>com.fn.pfolio.entity.MfSchemeTypeEntity</value>
+				<value>com.fn.pfolio.entity.HolidayListEntity</value>
+				<value>com.fn.pfolio.entity.ExchangeEntity</value>
+				<value>com.fn.pfolio.entity.AssetEquityEntity</value>
+				<value>com.fn.pfolio.entity.EquityTxnEntity</value>
+				<value>com.fn.pfolio.entity.AccountCodesEntity</value>
+				<value>com.fn.pfolio.entity.ResidentialStatusEntity</value>
+				<value>com.fn.pfolio.entity.BankBalanceEntity</value>
+				<value>com.fn.pfolio.entity.DematBalanceEntity</value>
+				<value>com.fn.pfolio.entity.FixedLedgerNamesEntity</value>
+				<value>com.fn.pfolio.entity.PledgeStatusEntity</value>
+				<value>com.fn.pfolio.entity.WealthFamilyEntity</value>
+				<value>com.fn.pfolio.entity.BrokerTxnUploadTempEntity</value>
+				<value>com.fn.pfolio.entity.EqSegmentEntity</value>
+				<value>com.fn.pfolio.entity.AssetSubClassEntity</value>
+				<value>com.fn.pfolio.entity.BankAccountTypeEntity</value>
+				<value>com.fn.pfolio.entity.MasterBrokerEntity</value>
+				<value>com.fn.pfolio.entity.BranchCategoryEntity</value>
+				<value>com.fn.pfolio.entity.EmployeeCertificateEntity</value>
+				<value>com.fn.pfolio.entity.DepartmentEntity</value>
+				<value>com.fn.pfolio.entity.DesignationEntity</value>
+				<value>com.fn.pfolio.entity.ManagedAccAdvisorEntity</value>
+				<value>com.fn.pfolio.entity.ManagedAccSchemeEntity</value>
+				<value>com.fn.pfolio.entity.ManagedAccTxnEntity</value>
+				<value>com.fn.pfolio.entity.ManagedAccMktValueEntity</value>
+				<value>com.fn.pfolio.entity.MasterDepositoryEntity</value>
+				<value>com.fn.pfolio.entity.MasterStateEntity</value>
+				<value>com.fn.pfolio.entity.MasterRegionEntity</value>
+				<value>com.fn.pfolio.entity.MasterCountryEntity</value>
+				<value>com.fn.pfolio.entity.MasterCityEntity</value>
+				<value>com.fn.pfolio.entity.MasterBankEntity</value>
+				<value>com.fn.pfolio.entity.MasterBankBranchEntity</value>
+				<value>com.fn.pfolio.entity.EmpBranchEntity</value>
+				<value>com.fn.pfolio.entity.EmpCertificateMappingEntity</value>
+				<value>com.fn.pfolio.entity.EmpDeptarmentEntity</value>
+				<value>com.fn.pfolio.entity.EmpDesignationEntity</value>
+				<value>com.fn.pfolio.entity.EmpReportingEntity</value>
+				<value>com.fn.pfolio.entity.InvestorTypeEntity</value>
+				<value>com.fn.pfolio.entity.ClientTypeEntity</value>
+				<value>com.fn.pfolio.entity.ClientSubTypeEntity</value>
+				<value>com.fn.pfolio.entity.OccupationEntity</value>
+				<value>com.fn.pfolio.entity.ClientAgreementEntity</value>
+				<value>com.fn.pfolio.entity.LegalDocumentEntity</value>
+				<value>com.fn.pfolio.entity.LegalDocumentSubTypeEntity</value>
+				<value>com.fn.pfolio.entity.RiskProfileEntity</value>
+				<value>com.fn.pfolio.entity.ValueAddedServiceEntity</value>
+				<value>com.fn.pfolio.entity.SplitBonusEntity</value>
+				<value>com.fn.pfolio.entity.DividendEntity</value>
+				<value>com.fn.pfolio.entity.EqDmaEntity</value>
+				<value>com.fn.pfolio.entity.DmaParticipantsEntity</value>
+				<value>com.fn.pfolio.entity.ClientPortfolioEntity</value>
+				<value>com.fn.pfolio.entity.MasterZoneEntity</value>
+				<value>com.fn.pfolio.entity.FamilyEngagementEntity</value>
+				<value>com.fn.pfolio.entity.FamilySubEngagementEntity</value>
+				<value>com.fn.pfolio.entity.MasterTdsEntity</value>
+				<value>com.fn.pfolio.entity.MasterServiceTaxEntity</value>
+				<value>com.fn.pfolio.entity.ManagedAccClientMapEntity</value>
+				<value>com.fn.pfolio.entity.IiflBranchEntity</value>
+				<value>com.fn.pfolio.entity.FamilyRmMappingEntity</value>
+				<value>com.fn.pfolio.entity.ClientAddressDetailsEntity</value>
+				<value>com.fn.pfolio.entity.ClientTouchPointEntity</value>
+				<value>com.fn.pfolio.entity.PortfolioMfFolioMappingEntity</value>
+				<value>com.fn.pfolio.entity.PortfolioMaFolioMappingEntity</value>
+				<value>com.fn.pfolio.entity.PortfolioDebtFolioMappingEntity</value>
+				<value>com.fn.pfolio.entity.ClientProductInterestEntity</value>
+				<value>com.fn.pfolio.entity.ClientRmNoteBackgroundEntity</value>
+				<value>com.fn.pfolio.entity.ClientDocumentAgreementEntity</value>
+				<value>com.fn.pfolio.entity.ClientNomineeEntity</value>
+				<value>com.fn.pfolio.entity.RoleActivityNameEntity</value>
+				<value>com.fn.pfolio.entity.RolePermissionsEntity</value>
+				<value>com.fn.pfolio.entity.MfTxnEntity</value>
+	<!-- 			<value>com.fn.pfolio.entity.MfCorpusTxnEntity</value> -->
+				<value>com.fn.pfolio.entity.MfFundManagerEntity</value>
+				<value>com.fn.pfolio.entity.ReferalTypeEntity</value>
+				<value>com.fn.pfolio.entity.ReferalEntity</value>
+				<value>com.fn.pfolio.entity.EquityTempEntity</value>
+				<value>com.fn.pfolio.entity.DerivativesTxnEntity</value>
+				<value>com.fn.pfolio.entity.DerivativeTempEntity</value>
+				<value>com.fn.pfolio.entity.AssetFutureEntity</value>
+				<value>com.fn.pfolio.entity.AssetOptionEntity</value>
+				<value>com.fn.pfolio.entity.FutureExpiryEntity</value>
+				<value>com.fn.pfolio.entity.FutureQuoteEntity</value>
+				<value>com.fn.pfolio.entity.FuturePriceHistEntity</value>
+				<value>com.fn.pfolio.entity.OptionExpiryEntity</value>
+				<value>com.fn.pfolio.entity.OptionQuoteEntity</value>
+				<value>com.fn.pfolio.entity.OptionStrikePriceEntity</value>
+				<value>com.fn.pfolio.entity.OptionPriceHistEntity</value>
+				<value>com.fn.pfolio.entity.RightsEntity</value>
+				<value>com.fn.pfolio.entity.IpoListEntity</value>
+				<value>com.fn.pfolio.entity.PortfolioBankEntity</value>
+				<value>com.fn.pfolio.entity.PortfolioDematEntity</value>
+				<value>com.fn.pfolio.entity.FinSystemParamEntity</value>
+				<value>com.fn.pfolio.entity.AssetSubClassMappingEntity</value>
+				<value>com.fn.pfolio.entity.MfNavHistoryEntity</value>
+				<value>com.fn.pfolio.entity.MfNavQuoteEntity</value>
+				<value>com.fn.pfolio.entity.EquityQuoteEntity</value>
+				<value>com.fn.pfolio.entity.EquityPriceHistoryEntity</value>
+				<value>com.fn.pfolio.entity.OrderStatesEntity</value>
+				<value>com.fn.pfolio.entity.MfNfoEntity</value>
+				<value>com.fn.pfolio.entity.FrozenPortfolioEntity</value>
+				<value>com.fn.pfolio.entity.ModelPfolioAllocationEntity</value>
+				<value>com.fn.pfolio.entity.DPAlternateListEntity</value>
+				<value>com.fn.pfolio.entity.DPCompositionEntity</value>
+				<value>com.fn.pfolio.entity.DPSchemeEntity</value>
+				<value>com.fn.pfolio.entity.NegativeListEntity</value>
+				<value>com.fn.pfolio.entity.CamsTxnEntity</value>
+				<value>com.fn.pfolio.entity.CamsFolioEntity</value>
+				<value>com.fn.pfolio.entity.TempletonFolioEntity</value>
+				<value>com.fn.pfolio.entity.TempletonTxnEntity</value>
+				<value>com.fn.pfolio.entity.KarvyTxnEntity</value>
+				<value>com.fn.pfolio.entity.SundaramTxnEntity</value>
+				<value>com.fn.pfolio.entity.UnMappedFoliosEntity</value>
+				<value>com.fn.pfolio.entity.BuyBackEntity</value>
+				<value>com.fn.pfolio.entity.OpenOfferEntity</value>
+				<value>com.fn.pfolio.entity.DelistingEntity</value>
+				<value>com.fn.pfolio.entity.TxnStockSettleEntity</value>
+				<value>com.fn.pfolio.entity.TxnCorpusDetailsEntity</value>
+				<value>com.fn.pfolio.entity.EtlProcessEntity</value>
+				<value>com.fn.pfolio.entity.EtlProcessLogEntity</value>
+				<value>com.fn.pfolio.entity.IiflBankEntity</value>
+				<value>com.fn.pfolio.entity.IiflDematEntity</value>
+				<value>com.fn.pfolio.entity.WatchListEntity</value>
+				<value>com.fn.pfolio.entity.WatchListItemsEntity</value>
+				<value>com.fn.pfolio.entity.IIFLRevisionEntity</value>
+				<value>com.fn.pfolio.entity.AssetBidOfferRateEntity</value>
+				<value>com.fn.pfolio.entity.AssetFiEntity</value>
+				<value>com.fn.pfolio.entity.DPOrderEntity</value>
+				<value>com.fn.pfolio.entity.DerivativesMarginEntity</value>
+				<value>com.fn.pfolio.entity.DPClientVarianceEntity</value>
+				<value>com.fn.pfolio.entity.DPVarianceEntity</value>
+				<value>com.fn.pfolio.entity.DPOrderSummaryEntity</value>
+				<value>com.fn.pfolio.entity.DPVarianceSummaryEntity</value>
+				<value>com.fn.pfolio.entity.CurrencyDumpEntity</value>
+				<value>com.fn.pfolio.entity.CurrencyFutureEntity</value>
+				<value>com.fn.pfolio.entity.CurrencyFutureExpiryEntity</value>
+				<value>com.fn.pfolio.entity.CurrencyFuturePriceHistoryEntity</value>
+				<value>com.fn.pfolio.entity.CurrencyFutureQuoteEntity</value>
+				<value>com.fn.pfolio.entity.CurrencyOptionEntity</value>
+				<value>com.fn.pfolio.entity.CurrencyOptionExpiryEntity</value>
+				<value>com.fn.pfolio.entity.CurrencyOptionPriceHistoryEntity</value>
+				<value>com.fn.pfolio.entity.CurrencyOptionQuoteEntity</value>
+				<value>com.fn.pfolio.entity.CurrencyOptionStrikePriceEntity</value>
+				<value>com.fn.pfolio.entity.CurrencyTxnDumpEntity</value>
+				<value>com.fn.pfolio.entity.CommodityDumpEntity</value>
+				<value>com.fn.pfolio.entity.CommodityExpiryEntity</value>
+				<value>com.fn.pfolio.entity.CommodityPriceHistEntity</value>
+				<value>com.fn.pfolio.entity.CommodityQuoteEntity</value>
+				<value>com.fn.pfolio.entity.CommodityTempEntity</value>
+				<value>com.fn.pfolio.entity.CommodityTxnDumpEntity</value>
+				<value>com.fn.pfolio.entity.AssetCommodityEntity</value>
+				<value>com.fn.pfolio.entity.CommodityTxnEntity</value>
+				<value>com.fn.pfolio.entity.CurrencyTxnEntity</value>
+				<value>com.fn.pfolio.entity.MkChkStatusEntity</value>
+				
+				<value>com.fn.pfolio.entity.FeesSummaryEntity</value>
+				<value>com.fn.pfolio.entity.FeesRunHistoryEntity</value>
+				<value>com.fn.pfolio.entity.FeesReversalEntity</value>
+				
+				<value>com.fn.pfolio.entity.TxnMirrorEntity</value>
+				<value>com.fn.pfolio.entity.XirrEntity</value>
+				<value>com.fn.pfolio.entity.XirrClientEntity</value>
+				<value>com.fn.pfolio.entity.TwrrEntity</value>
+				<value>com.fn.pfolio.entity.CamsWbr2aEntity</value>
+				<value>com.fn.pfolio.entity.CapitalGainEntity</value>
+				<value>com.fn.pfolio.entity.FeesPayableEntity</value>
+				<value>com.fn.pfolio.entity.MigrationTxnEntity</value>
+				<value>com.fn.pfolio.entity.RealisedGainEntity</value>
+				<value>com.fn.pfolio.entity.AumBalanceEntity</value>
+				<value>com.fn.pfolio.entity.FifoTxnsEntity</value>
+				<value>com.fn.pfolio.entity.FifoRGTxnsEntity</value>
+				<value>com.fn.pfolio.entity.MfRtaTxnTypeMappingEntity</value>
+				<value>com.fn.pfolio.entity.EmpLinkedEntity</value>
+				<value>com.fn.pfolio.entity.FeesPostingDateEntity</value>
+				<value>com.fn.pfolio.entity.RmClosureEntity</value>
+				<value>com.fn.pfolio.entity.DebtExchangeTxnEntity</value>
+				<value>com.fn.pfolio.entity.TxnUnsettleEntity</value>
+				<value>com.fn.pfolio.entity.TxnCorpusUnsettleEntity</value>
+				<value>com.fn.pfolio.entity.RimsBrokerageEntity</value>
+				<value>com.fn.pfolio.entity.RimsRmCostEntity</value>
+				<value>com.fn.pfolio.entity.RimsRtaEntity</value>
+				<value>com.fn.pfolio.entity.ExchangeRiskEntity</value>
+				<value>com.fn.pfolio.entity.TxnMfWbr2aDetailsEntity</value>
+				<value>com.fn.pfolio.entity.KarvyWbr2aEntity</value>
+				<value>com.fn.pfolio.entity.SundaramWbr2aEntity</value>
+				<value>com.fn.pfolio.entity.TempletonWbr2aEntity</value>
+				<value>com.fn.pfolio.entity.ModelPfolioCompoFamEntity</value>
+				<value>com.fn.pfolio.entity.ModelPfolioCompoSubClassEntity</value>
+				<value>com.fn.pfolio.entity.ModelPfolioCompoClassifiEntity</value>
+				<value>com.fn.pfolio.entity.DiscPmsExchangeTxnEntity</value>
+				<value>com.fn.pfolio.entity.RimsRtaCamsTrailEntity</value>
+				<value>com.fn.pfolio.entity.RimsRtaCamsUpfrontEntity</value>
+				<value>com.fn.pfolio.entity.RimsRtaKarvyEntity</value>
+				<value>com.fn.pfolio.entity.RimsRtaSundaramTrailEntity</value>
+				<value>com.fn.pfolio.entity.RimsRtaSundaramUpfrontEntity</value>
+				<value>com.fn.pfolio.entity.RimsRtaTempletonTrailEntity</value>
+				<value>com.fn.pfolio.entity.RimsRtaTempletonUpfrontEntity</value>
+				<value>com.fn.pfolio.entity.EodProcessEntity</value>
+				<value>com.fn.pfolio.entity.EodProcessLogEntity</value>
+				<value>com.fn.pfolio.entity.TxnAudEntity</value>
+				<value>com.fn.pfolio.entity.ClientOrderAudEntity</value>
+				<value>com.fn.pfolio.entity.BenchmarkXirrPriceEntity</value>
+				<value>com.fn.pfolio.entity.XirrBenchmarkEntity</value>
+				<value>com.fn.pfolio.entity.XirrBenchmarkClientEntity</value>
+				<value>com.fn.pfolio.entity.RimsIntlAumEntity</value>
+				<value>com.fn.pfolio.entity.RimsRmTargetEntity</value>
+				<value>com.fn.pfolio.entity.RimsServiceMapEntity</value>
+				<value>com.fn.pfolio.entity.RimsRevMiscEntity</value>
+				<value>com.fn.pfolio.entity.MfRealisedGainEntity</value>
+				<value>com.fn.pfolio.entity.MfFifoTxnEntity</value>
+				<value>com.fn.pfolio.entity.RimsMfFeesRulesEntity</value>
+				<value>com.fn.pfolio.entity.AccountingEntriesEntity</value>
+				<value>com.fn.pfolio.entity.ClientLoginEntity</value>
+				<value>com.fn.pfolio.entity.AlertTxnSMSEmailEntity</value>
+				<value>com.fn.pfolio.entity.MkChkRequiredEntity</value>
+				<value>com.fn.pfolio.entity.MfFolioChangeEntity</value>
+				<value>com.fn.pfolio.entity.MaFolioChangeEntity</value>
+				<value>com.fn.pfolio.entity.DebtFolioChangeEntity</value>
+				<value>com.fn.pfolio.entity.DebtInterestEntity</value>
+				<value>com.fn.pfolio.entity.DPExchOrderEntity</value>
+				<value>com.fn.pfolio.entity.DPExchOrderSummaryEntity</value>
+				<value>com.fn.pfolio.entity.ReportInfoEntity</value>
+				
+				<!-- From client retail -->
+			<value>com.fn.pfolio.entity.FhcSystemParamEntity</value>
+			<value>com.fn.pfolio.entity.FhcIncomeGrowthRateEntity</value>
+			<value>com.fn.pfolio.entity.FhcGoalsEntity</value>		
+			<value>com.fn.pfolio.entity.FhcIncomeEntity</value>
+			<value>com.fn.pfolio.entity.FhcExpenseEntity</value>
+			<value>com.fn.pfolio.entity.FhcExpenseGrowthRateEntity</value>
+			<value>com.fn.pfolio.entity.FpAssetGrowthRateEntity</value>
+			<value>com.fn.pfolio.entity.FpAssetSellPlanEntity</value>
+			<value>com.fn.pfolio.entity.FpCurrCommitedInvEntity</value>
+			<value>com.fn.pfolio.entity.FpFamilyCommentsEntity</value>
+			<value>com.fn.pfolio.entity.FpGoalAssetLinkEntity</value>	
+			<value>com.fn.pfolio.entity.FpGoalPlanEntity</value>	
+			<value>com.fn.pfolio.entity.FpGoalSubclassLinkEntity</value>	
+			<value>com.fn.pfolio.entity.FpHouseRecoEntity</value>	
+			<value>com.fn.pfolio.entity.FpInsReoMaturityEntity</value>
+			<value>com.fn.pfolio.entity.FpInsuranceRecoEntity</value>
+			<value>com.fn.pfolio.entity.FpSubclassGrowthRateEntity</value>
+			<value>com.fn.pfolio.entity.FpRiskQuestionChoiceEntity</value>
+			<value>com.fn.pfolio.entity.FpRiskQuestionsEntity</value>
+			<value>com.fn.pfolio.entity.FpRiskUserAnswerEntity</value>
+			<value>com.fn.pfolio.entity.FpCashFlowEntity</value>
+			<value>com.fn.pfolio.entity.FpInvCashFlowEntity</value>
+
+			<value>com.fn.pfolio.entity.LiabilityLoanEntity</value>
+			<value>com.fn.pfolio.entity.AssetInsuranceEntity</value>
+			<value>com.fn.pfolio.entity.AssetInsMaturityEntity</value>
+			<value>com.fn.pfolio.entity.AssetReOtherEntity</value>
+			<value>com.fn.pfolio.entity.InsuProviderEntity</value>	
+			<value>com.fn.pfolio.entity.InsuPolicyBonusEntity</value>
+			<value>com.fn.pfolio.entity.InsuPolicyEntity</value>
+			<value>com.fn.pfolio.entity.InsuUlipFundEntity</value>
+			<value>com.fn.pfolio.entity.InsuUlipPriceHistEntity</value>
+			<value>com.fn.pfolio.entity.InsuUlipQuoteEntity</value>	
+			<value>com.fn.pfolio.entity.MarketPriceMetalsEntity</value>
+			<value>com.fn.pfolio.entity.MarketPriceReEntity</value>
+			<value>com.fn.pfolio.entity.AssetMetalsEntity</value>
+			<value>com.fn.pfolio.entity.FpGeneratePlanEntity</value>
+			<value>com.fn.pfolio.entity.CobFamilyFinParamEntity</value>
+			<value>com.fn.pfolio.entity.CobFamilyPaymentEntity</value>
+			<value>com.fn.pfolio.entity.FpModelPfolioSchemeEntity</value>
+			<value>com.fn.pfolio.entity.FpModelPfolioCompositionEntity</value>
+			<value>com.fn.pfolio.entity.FpModelPfolioGrowthRateEntity</value>
+			<value>com.fn.pfolio.entity.MfFolioShiftEntity</value>
+			<value>com.fn.pfolio.entity.ClientOtpRefNumEntity</value>
+			<value>com.fn.pfolio.entity.FpFamilyCommentEntity</value>
+			<value>com.fn.pfolio.entity.FpCommentTypeEntity</value>
+			<value>com.fn.pfolio.entity.TxnMfEntity</value>
+			<value>com.fn.pfolio.entity.TxnCorpActionEntity</value>
+			<value>com.fn.pfolio.entity.FpRiskTypeEntity</value>
+			<value>com.fn.pfolio.entity.MasterAdvisorEntity</value>
+			<value>com.fn.pfolio.entity.CorpusReqOutEntity</value>
+			<value>com.fn.pfolio.entity.FinSystemParamDateEntity</value>
+			<value>com.fn.pfolio.entity.ReportsCustomisationEntity</value>
+			<value>com.fn.pfolio.entity.BrokerTxnUploadTempAudEntity</value>
+			<value>com.fn.pfolio.entity.EquityTxnAudEntity</value>
+			<value>com.fn.pfolio.entity.EquityTempAudEntity</value>
+			<value>com.fn.pfolio.entity.DerivativeTempAudEntity</value>
+			<value>com.fn.pfolio.entity.CamsTxnAudEntity</value>
+			<value>com.fn.pfolio.entity.KarvyTxnAudEntity</value>
+			<value>com.fn.pfolio.entity.SundaramTxnAudEntity</value>
+			<value>com.fn.pfolio.entity.TempletonTxnAudEntity</value>
+			<value>com.fn.pfolio.entity.SundaramWbr2aAudEntity</value>
+			<value>com.fn.pfolio.entity.TempletonWbr2aAudEntity</value>
+			<value>com.fn.pfolio.entity.KarvyWbr2aAudEntity</value>
+			<value>com.fn.pfolio.entity.CamsWbr2aAudEntity</value>
+			<value>com.fn.pfolio.entity.MasterCurrencyEntity</value>
+			<value>com.fn.pfolio.entity.CurrencyPriceEntity</value>
+			<value>com.fn.pfolio.entity.TxnOffShoreEntity</value>
+			<value>com.fn.pfolio.entity.FamilyTouchPointEntity</value>
+			<value>com.fn.pfolio.entity.DSREntity</value>
+			<value>com.fn.pfolio.entity.DerivativesTxnAudEntity</value>
+			<value>com.fn.pfolio.entity.PfLoanBalanceEntity</value>
+			<value>com.fn.pfolio.entity.PricePerformanceEntity</value>
+			<value>com.fn.pfolio.entity.MasterInvhorizonEntity</value>
+			<value>com.fn.pfolio.entity.MasterInvstrategyEntity</value>
+			<value>com.fn.pfolio.entity.MasterHouserecoEntity</value>
+			<value>com.fn.pfolio.entity.AssetFamilyEntity</value>
+			<value>com.fn.pfolio.entity.EmailEodEtlEntity</value>
+			<value>com.fn.pfolio.entity.AutoReqProcessEntity</value>
+			<value>com.fn.pfolio.entity.AutoRequestEntity</value>
+			<value>com.fn.pfolio.entity.AutoReqRunEntity</value>
+			<value>com.fn.pfolio.entity.RefReferrorEntity</value>
+			<value>com.fn.pfolio.entity.RefRackRateEntity</value>			
+			<value>com.fn.pfolio.entity.RefFamilyMappingEntity</value>
+			<value>com.fn.pfolio.entity.RefPayableRuleEntity</value>
+			<value>com.fn.pfolio.entity.RefPayableEntity</value>
+			<value>com.fn.pfolio.entity.RefAccountingEntity</value>
+			<value>com.fn.pfolio.entity.VcfDrawDownEntity</value>	
+			<value>com.fn.pfolio.entity.MfSysPlansEntity</value>
+			<value>com.fn.pfolio.entity.ClientLoggedHistoryEntity</value>		
+			<value>com.fn.pfolio.entity.PermissionEntity</value>
+			<value>com.fn.pfolio.entity.RoleEntity</value>
+			<value>com.fn.pfolio.entity.RolePermissionMapEntity</value>
+			<value>com.fn.pfolio.entity.UserRoleEntity</value>
+			<value>com.fn.pfolio.entity.OrderCorpusOutEntity</value>
+			<value>com.fn.pfolio.entity.OrderCorpusOutStatusEntity</value>
+			<value>com.fn.pfolio.entity.OrderCorpusOutProcessEntity</value>
+			<value>com.fn.pfolio.entity.EmployeeDetailsEntity</value>
+			<value>com.fn.pfolio.entity.MasterOrgnEntity</value>
+			<value>com.fn.pfolio.entity.SystemPropTradeEntity</value>
+			<value>com.fn.pfolio.entity.ArnEntity</value>
+			<value>com.fn.pfolio.entity.DynamicFormEntity</value>
+			<value>com.fn.pfolio.entity.DynaDrpdwnEntity</value>
+			<value>com.fn.pfolio.entity.DynaFormPermissionEntity</value> 
+			<value>com.fn.pfolio.entity.DealConfirmAudEntity</value>
+			<value>com.fn.pfolio.entity.VcfCommitedInvEntity</value>
+			<value>com.fn.pfolio.entity.InsIssuanceEntity</value>
+			<value>com.fn.pfolio.entity.InsRenewalEntity</value>
+			<value>com.fn.pfolio.entity.InsCancelationEntity</value>
+			<value>com.fn.pfolio.entity.ModelPfolioAFEntity</value>
+			<value>com.fn.pfolio.entity.MPfolioCompositionAFEntity</value>
+			<value>com.fn.pfolio.entity.UserLoggedHistoryEntity</value>
+			<value>com.fn.pfolio.entity.SysUpdateLedgerEntity</value>
+			<value>com.fn.pfolio.entity.SysUpdateTxnEntity</value>
+			<value>com.fn.pfolio.entity.SysDeleteVoucherEntity</value>
+			<value>com.fn.pfolio.entity.SysUpdateTxnCorpusEntity</value>
+			<value>com.fn.pfolio.entity.TxnUpdateSynchEntity</value>
+			<value>com.fn.pfolio.entity.ClientFatcaEntity</value>
+			<value>com.fn.pfolio.entity.ClientFatcaKYCEntity</value>
+			<value>com.fn.pfolio.entity.ClientUBOEntity</value>
+			<value>com.fn.pfolio.entity.OrderCutOffTimeEntity</value>
+			<value>com.fn.pfolio.entity.DocRepositoryEntity</value>
+			<!-- <value>com.fn.pfolio.entity.WsRequestLogsEntity</value> -->
+			<value>com.fn.pfolio.entity.PGResponseEntity</value>
+		</list>
+		</property>
+	</bean>
+<!-- Envers Info -->
+         <!-- <bean id="envers" class="org.hibernate.envers.event.AuditEventListener"/> -->
+         <bean id="listen" class="com.fn.pfolio.engine.IIFLRevListener"/>
+	
+	<!--<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url.iifldb}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>-->
+	
+	
+	<!-- Database encryption logic starts here -->
+
+	<!-- -->
+	<!-- Configuration for encryptor, based on environment variables. -->
+	<!-- -->
+	<!-- In this example, the encryption password will be read from an -->
+	<!-- environment variable called "APP_ENCRYPTION_PASSWORD" which, once -->
+	<!-- the application has been started, could be safely unset. -->
+	<!-- -->
+	<!-- bean id="environmentVariablesConfiguration"
+		class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+		<property name="algorithm" value="PBEWithMD5AndDES" />
+		<property name="password" value="bunUGkcYl5vMtOOr9rN5vVpqtNaPs58VBo9K3CkdS3vfDDEiqn" />
+	</bean-->
+
+
+	<!-- -->
+	<!-- The will be the encryptor used for decrypting configuration values. -->
+	<!-- -->
+
+	<!--  bean id="configurationEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+		<property name="config" ref="environmentVariablesConfiguration" />
+	</bean-->
+
+
+	<!-- -->
+	<!-- The EncryptablePropertyPlaceholderConfigurer will read the -->
+	<!-- .properties files and make their values accessible as ${var}. -->
+	<!-- -->
+	<!-- Our "configurationEncryptor" bean (which implements -->
+	<!-- org.jasypt.encryption.StringEncryptor) is set as a constructor arg. -->
+	<!-- -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<!-- constructor-arg ref="configurationEncryptor" /-->
+		<property name="locations">
+			<list>
+				<value>classpath:dbconfig.properties</value>
+				<value>classpath:wealthcore.properties</value>
+
+			</list>
+		</property>
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+	</bean>
+
+	<!-- -->
+	<!-- Our datasource is configured here, in the usual way. Jasypt's -->
+	<!-- EncryptedPropertyPlaceholderConfigurer will make sure that the -->
+	<!-- ${datasource.username and ${datasource.password} file gets decrypted -->
+	<!-- and the DBCP DataSource will be correctly initialised. -->
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url.iifldb}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="initialSize" value="10" />
+   		<property name="maxActive" value="60" />
+   		<property name="maxWait" value="10000" />
+   		<property name="maxIdle" value="8" />
+   		<property name="minIdle" value="2" />
+   		<property name="testWhileIdle" value="true"></property>
+   		<property name="validationQuery" value="select 1"></property>
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<!-- <bean id="transactionProxyTemplate" abstract="true"
+      class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+      <property name="transactionManager" ref="transactionManager"/>
+      <property name="transactionAttributes">
+         <props>
+            <prop key="*">PROPAGATION_REQUIRED</prop>
+         </props>
+      </property>
+   </bean>
+   
+   <bean id="AuctionManager" parent="transactionProxyTemplate">
+         <property name="target">
+            <bean class="com.fn.pfolio.model.impl.EodProcessLogDaoImpl">
+         </bean>
+      </property>
+    </bean> --> 
+	
+	
+	
+	
+	
+	
+	
+	<!-- START: Redis -->
+	<bean id="jedisConnFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"/>
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate" p:connection-factory-ref="jedisConnFactory" />
+	
+    <!-- END: Redis -->
+       
+ 	<!-- for shiro start 
+ 	<bean id="sampleRealm" class="com.fn.pfolio.security.SampleRealm" />
+ 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+ 	    <property name="realm" ref="sampleRealm"/>
+ 	</bean>
+ 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+    <property name="securityManager" ref="securityManager"/>
+    
+    <property name="filterChainDefinitions">
+        <value>
+            # some example chain definitions:
+            /admin/** = authc, roles[admin]
+            /docs/** = authc, perms[document:read]
+            /** = authc
+            # more URL-to-FilterChain definitions here
+        </value>
+    </property>
+</bean>-->
+
+<!-- for shiro end -->
+ 
+</beans>
